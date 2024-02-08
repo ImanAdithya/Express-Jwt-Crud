@@ -87,5 +87,31 @@ router.delete('/delete/:id', authenticateToken, (req, res) => {
     });
 });
 
+router.put('/update/:id', authenticateToken, (req, res) => {
+    const userName = req.params.id;
+    const { username, password } = req.body;
+
+    db.query('UPDATE users SET username = ?, password = ? WHERE username = ?', [username, password, userName], (err, result) => {
+        if (err) {
+            res.status(500).json({ error: 'Internal server error' });
+        } else if (result.affectedRows === 0) {
+            res.status(404).json({ error: 'User not found' });
+        } else {
+            res.status(200).json({ message: 'User updated successfully' });
+        }
+    });
+});
+
+router.get('/getAll', authenticateToken, (req, res) => {
+    db.query('SELECT * FROM users', (err, result) => {
+        if (err) {
+            res.status(500).json({ error: 'Internal server error' });
+        } else {
+            res.status(200).json({ users: result });
+        }
+    });
+});
+
+
 
 module.exports = router;
