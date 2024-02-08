@@ -62,5 +62,30 @@ router.get('/data', authenticateToken, (req, res) => {
     });
 });
 
+router.delete('/delete/:id', authenticateToken, (req, res) => {
+    const userName = req.params.id;
+    const decodedToken = jwt.decode(req.get('authorization').slice(7));
+    const username = decodedToken.username;
+
+    db.query('SELECT * FROM users WHERE username = ? ', [userName], (err, result) => {
+        if (err) {
+            res.status(500).json({ error: 'Internal server error' });
+        } else if (result.length === 0) {
+            res.status(403).json({ error: 'You are not authorized to delete this user' });
+        } else {
+
+            db.query('DELETE FROM users WHERE username = ?', [userName], (err, result) => { // Change this to delete by ID, not username
+                if (err) {
+                    res.status(500).json({ error: 'Internal server error' });
+                } else if (result.affectedRows === 0) {
+                    res.status(404).json({ error: 'User not found' });
+                } else {
+                    res.status(200).json({ message: 'User deleted successfully' });
+                }
+            });
+        }
+    });
+});
+
 
 module.exports = router;
