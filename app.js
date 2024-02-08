@@ -8,7 +8,13 @@ const DBConnection=require('./db/DBConnection');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
-
+DBConnection.connect((err) => {
+  if (err) {
+    console.error("MySQL connect error", err);
+    return;
+  }
+  console.log("MySQL connected successfully");
+});
 
 var app = express();
 

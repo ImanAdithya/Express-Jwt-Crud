@@ -7,12 +7,6 @@ const db = mysql.createConnection({
     database: 'jwt'
 });
 
-db.connect((err) => {
-    if (err) {
-        console.error("MySQL connect error", err);
-        return;
-    }
-    console.log("MySQL connected successfully");
-});
+
 
 module.exports = db;
